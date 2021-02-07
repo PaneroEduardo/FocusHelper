@@ -30,49 +30,62 @@
           </div>
         </div>
       </div>
+      <ng-container *ngIf="showAlert">
+        <div class="row mt-3">
+          <div class="col">
+            <alert type="success" [dismissible]="true" dismissOnTimeout="5000" (onClosed)="onClosedAlert()">Horario
+              creado
+              correctamente.</alert>
+          </div>
+        </div>
+      </ng-container>
+
+
+      <ng-container *ngIf="(schedules$ | async) as schedules">
+        <div class="row mt-3">
+          <div class="col">
+            <table class="table" id="custom-urls">
+              <tbody>
+                <ng-container *ngFor="let schedule of schedules; let i = index">
+                  <tr>
+                    <td [ngClass]="{'border-0': i==0}">
+                      <div class="row">
+                        <div class="col-auto">{{schedule.days | days}}</div>
+                        <div class="col-auto ml-auto">
+                          <ng-container *ngFor="let hourPeriod of schedule.hourPeriods; let last = last">
+                            <span [ngClass]="{'mr-3': (!last)}">{{hourPeriod.startPeriod}} -
+                              {{hourPeriod.endPeriod}}</span>
+                          </ng-container>
+                        </div>
+                        <div class="col-auto">
+                          <button class="btn btn-ghost p-0" (click)="deleteSchedule(i)">
+                            <i class="icon-trash" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
 
-<ng-container *ngIf="showAlert">
-  <alert type="success" [dismissible]="true" dismissOnTimeout="5000" (onClosed)="onClosedAlert()">Horario creado
-    correctamente.</alert>
-</ng-container>
 
 
-<!-- <ng-container *ngIf="urls && urls.length">
-<div class="row mt-3">
-  <div class="col">
-    <table class="table" id="custom-urls">
-      <tbody>
-          <ng-container *ngFor="let url of urls; let i = index">
-            <tr>
-              <td [ngClass]="{'border-0': i==0}">
-                <div class="row">
-                  <div class="col-auto mr-auto">{{url}}</div>
-                  <div class="col-auto">
-                    <button class="btn btn-ghost p-0" (click)="deleteUrl(i)">
-                      <i class="icon-trash" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</ng-container> -->
-
-<div bsModal #createScheduleModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createScheduleModalLabel" aria-hidden="true">
+<div bsModal #createScheduleModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="createScheduleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Programar nuevo horario</h4>
       </div>
       <div class="modal-body">
-          <edit-schedule (close)="closeCreateScheduleModal($event)"></edit-schedule>
+        <edit-schedule (close)="closeCreateScheduleModal($event)"></edit-schedule>
       </div>
     </div>
   </div>

@@ -1,14 +1,14 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 @Component({
-  selector: 'days-selector',
-  templateUrl: './days-selector.component.html',
-  styleUrls: ['./days-selector.component.scss'],
+  selector: "days-selector",
+  templateUrl: "./days-selector.component.html",
+  styleUrls: ["./days-selector.component.scss"],
 })
 export class DaysSelectorComponent implements OnInit {
   @Output()
   public daySelect: EventEmitter<boolean[]> = new EventEmitter();
 
-  public days: boolean[]
+  public days: boolean[];
 
   ngOnInit(): void {
     this.days = [false, false, false, false, false, false, false];
@@ -16,5 +16,9 @@ export class DaysSelectorComponent implements OnInit {
 
   onChange(): void {
     this.daySelect.emit(this.days);
+  }
+
+  reset(): void {
+    this.ngOnInit;
   }
 }

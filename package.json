@@ -1,27 +1,19 @@
 {
-  "name": "@coreui/coreui-free-angular-admin-template",
-  "version": "2.11.1",
-  "description": "CoreUI Free Angular 11 Admin Template",
+  "name": "focus-helper",
+  "version": "0.0.1",
+  "description": "Extension to help you to focus on your tasks",
   "author": {
-    "name": "Łukasz Holeczek",
-    "url": "http://holeczek.pl",
-    "github": "https://github.com/mrholek",
-    "twitter": "https://twitter.com/lukaszholeczek"
+    "name": "Eduardo Panero",
+    "url": "https://eduardopanero.es"
   },
-  "contributors": [
-    {
-      "name": "Andrzej Kopański",
-      "url": "https://github.com/xidedix"
-    }
-  ],
-  "homepage": "https://coreui.io/angular",
-  "copyright": "Copyright 2021 creativeLabs Łukasz Holeczek",
+  "homepage": "https://eduardopanero.es/focus-helper",
+  "copyright": "Copyright 2021 Eduardo Panero Arauzo",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "postinstall": "ngcc --properties es2015 browser module main --first-only",
     "start": "ng serve",
-    "build": "ng build --prod --aot --build-optimizer --common-chunk --vendor-chunk --optimization --progress",
+    "build": "ng build --prod --aot --build-optimizer --common-chunk --vendor-chunk=false --optimization --progress",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

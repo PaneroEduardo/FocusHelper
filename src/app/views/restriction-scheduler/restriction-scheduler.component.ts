@@ -1,8 +1,10 @@
 import { DaysOfWeek } from './../../models/days-of-week.enum';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { RestrictionSchedulerService } from './services/restriction-scheduler.service';
+import { Schedule } from '../../models/schedule';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: "app-restriction-scheduler",
@@ -11,7 +13,7 @@ import { RestrictionSchedulerService } from './services/restriction-scheduler.se
 })
 export class RestrictionSchedulerComponent implements OnInit {
 
-  constructor(private restrictionSchedulerService: RestrictionSchedulerService) {
+  constructor(private restrictionSchedulerService: RestrictionSchedulerService, private cd: ChangeDetectorRef) {
     this._form = new FormGroup({
       activateRestrictionScheduler: new FormControl(false, [Validators.required]),
     });
@@ -30,7 +32,22 @@ export class RestrictionSchedulerComponent implements OnInit {
     return this._showAlert;
   }
 
-  ngOnInit(): void {}
+  private _schedules$: Observable<Schedule[]>;
+  public get schedules$(): Observable<Schedule[]>{
+    return this._schedules$;
+  }
+
+  ngOnInit(): void {
+    this._schedules$ = this.restrictionSchedulerService.getSchedules();
+  }
+
+  getSchedules() {
+    this.cd.detectChanges();
+  }
+
+  deleteSchedule(i) {
+    this.restrictionSchedulerService.removeSchedule(i);
+  }
 
   openCreateScheduleModal() {
     this.createScheduleModal.show();
@@ -38,7 +55,9 @@ export class RestrictionSchedulerComponent implements OnInit {
   
   closeCreateScheduleModal(saved){
     this.createScheduleModal.hide();
-    this._showAlert = saved;
+    if(saved){
+      this._showAlert = saved;
+    }
   }
 
   onClosedAlert(): void {

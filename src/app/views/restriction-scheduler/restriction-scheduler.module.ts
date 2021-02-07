@@ -10,10 +10,11 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 import { DaysSelectorComponent } from './components/days-selector/days-selector.component';
 import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DaysPipe } from './pipes/days.pipe';
 
 
 @NgModule({
-  declarations: [RestrictionSchedulerComponent, DaysSelectorComponent, EditScheduleComponent],
+  declarations: [RestrictionSchedulerComponent, DaysSelectorComponent, EditScheduleComponent, DaysPipe],
   imports: [
     CommonModule,
     RestrictionSchedulerRoutingModule,

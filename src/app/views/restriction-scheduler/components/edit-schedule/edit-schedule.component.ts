@@ -1,7 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { RestrictionSchedulerService } from '../../services/restriction-scheduler.service';
+import { DaysSelectorComponent } from '../days-selector/days-selector.component';
 
 const clearFormArray = (formArray: FormArray) => {
   while (formArray.length !== 0) {
@@ -19,6 +20,9 @@ export class EditScheduleComponent implements OnInit {
 
   @Output()
   public close = new EventEmitter<boolean>();
+
+  @ViewChild(DaysSelectorComponent)
+  public daysSelectorComponent: DaysSelectorComponent
 
   private _hourPeriods: FormArray;
   public get hourPeriods(): FormArray {
@@ -80,11 +84,20 @@ export class EditScheduleComponent implements OnInit {
   }
 
   saveScheduler() {
-    this.restrictionSchedulerService.saveSchedule(this._form.value);
+    this.restrictionSchedulerService.addNewSchedule(this._form.value);
+    this.reset();
     this.close.emit(true);
   }
 
   closeModal() {
     this.close.emit(false);
+  }
+
+  reset(){
+    clearFormArray(this._form.get("days") as FormArray);
+    clearFormArray(this._form.get("hourPeriods") as FormArray);
+    this._form.reset();
+    this.daysSelectorComponent.reset();
+    this.addHourPeriods();
   }
 }
