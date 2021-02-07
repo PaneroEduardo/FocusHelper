@@ -1,0 +1,13 @@
+{
+  "name": "Focus Helper",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Extension which allow you to increase your productivity blocking sites and allows you to focus in yours objective",
+  "homepage_url": "http://extensionizr.com",
+  "background": {
+    "scripts": ["background-es2015.js"],
+    "persistent": true
+  },
+  "options_page": "index.html#/options/restriction/sites",
+  "permissions": ["https://*/*", "http://*/*", "tabs", "storage"]
+}

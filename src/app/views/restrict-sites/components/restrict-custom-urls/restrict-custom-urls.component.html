@@ -1,0 +1,61 @@
+<div class="row mt-4">
+  <div class="col-auto mr-auto">
+    <h3 class="text-uppercase">Restringir otros Sitios Web</h3>
+  </div>
+  <ng-container *ngIf="restrictCustomUrlsForm !== null">
+    <form class="col-auto" [formGroup]="restrictCustomUrlsForm">
+      <label class="switch switch-3d switch-success">
+        <input type="checkbox" class="switch-input" formControlName="resctrictCustomUrls">
+        <span class="switch-slider"></span>
+      </label>
+    </form>
+  </ng-container>
+</div>
+<div class="row">
+  <div class="col">
+    <p class="text-muted">Puedes agregar aquí otros sitios web.</p>
+  </div>
+</div>
+
+<ng-container *ngIf="newUrlForm !== null">
+  <form name="form" class="row" id="new-site-form" [formGroup]="newUrlForm" (submit)="createNewUrl()" novalidate>
+    <div class="col">
+      <input type="text" class="form-control" id="new-site-url" name="url" ng-model="url"
+        placeholder="Enter a web address" formControlName="url">
+
+      <!-- <div class="invalid-feedback" ng-show="form.$submitted && form.url.$error.required">
+      {{translate("optionsUrlRequired")}}
+    </div>
+    <div class="invalid-feedback" ng-show="form.$submitted &&form.url.$error.pattern">
+      {{translate("optionsUrlNotFormat")}}
+    </div> -->
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary w-100 pl-4 pr-4">Añadir</button>
+    </div>
+  </form>
+</ng-container>
+<div class="row mt-3">
+  <div class="col">
+    <ng-container *ngIf="urls && urls.length">
+    <table class="table" id="custom-urls">
+      <tbody>
+          <ng-container *ngFor="let url of urls; let i = index">
+            <tr>
+              <td [ngClass]="{'border-0': i==0}">
+                <div class="row">
+                  <div class="col-auto mr-auto">{{url}}</div>
+                  <div class="col-auto">
+                    <button class="btn btn-ghost p-0" (click)="deleteUrl(i)">
+                      <i class="icon-trash" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<form [formGroup]="form" (submit)="saveScheduler()"> 
+  <div class="row">
+    <div class="col">
+      <div class="form-group m-0">
+        <label>Seleccionar días de la semana: </label>
+        <days-selector (daySelect)="onDaysSelected($event)"></days-selector>
+      </div>
+    </div>
+  </div>
+  <ng-container formArrayName="hourPeriods">
+    <ng-container *ngFor="let _ of hourPeriods.controls;let i = index; let first = first ;let last = last">
+      <ng-form [formGroupName]="i">
+        <div class="row">
+          <div class="col-auto">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Desde: </label>
+              <select class="custom-select" formControlName="startPeriod">
+                <option *ngFor="let timelineLabel of timelineLabels">{{timelineLabel}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-auto mr-auto">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Hasta: </label>
+              <select class="custom-select" formControlName="endPeriod">
+                <option *ngFor="let timelineLabel of timelineLabels">{{timelineLabel}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-auto align-self-center pt-3">
+            <ng-container *ngIf="(first && last) || (!first && last)">
+              <button type="submit" class="btn btn-success" (click)="addHourPeriods()"><b><i class="cil-plus"></i></b></button>
+            </ng-container>
+            <ng-container *ngIf="!last">
+              <button type="submit" class="btn btn-danger" (click)="removeHourPeriod(i)"><b><i class="cil-minus"></i></b></button>
+            </ng-container>
+          </div>
+        </div>
+      </ng-form>
+    </ng-container>
+  </ng-container> 
+  <div class="row pt-3 border-top">
+    <div class="ml-auto col-auto">
+      <button class="btn btn-light pr-4 pl-4" (click)="closeModal()">Salir</button>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-success pr-4 pl-4" (click)="saveScheduler()">Crear</button>
+    </div>
+  </div>
+</form>

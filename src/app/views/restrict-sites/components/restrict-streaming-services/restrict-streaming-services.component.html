@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-auto mr-auto">
+    <h3 class="text-uppercase">Restringir Servicios de Streaming</h3>
+  </div>
+  <ng-container *ngIf="restrictStreamingServicesForm !== null">
+    <form  class="col-auto" [formGroup]="restrictStreamingServicesForm">
+      <label class="switch switch-3d switch-success">
+        <input type="checkbox" class="switch-input" formControlName="restrictStreamingServices">
+        <span class="switch-slider"></span>
+      </label>
+    </form>
+  </ng-container>
+</div>
+<div class="row">
+  <div class="col">
+    <p class="text-muted">Restringe el acceso a los servicios de streaming. Por defecto, se restringe las
+      siguientes redes sociales: Amazon Prime Video, Disney +, HBO, Netflix</p>
+  </div>
+</div>

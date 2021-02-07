@@ -1,0 +1,16 @@
+.day-selector-label {
+  display: block;
+  border-radius: 50%;
+  border: 1px solid #CCC;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.85rem;
+  font-weight: bold;
+}
+
+.day-selector .day-selector-input:checked~.day-selector-label{
+  background-color: #4dbd74;
+  color: #FFF;
+}

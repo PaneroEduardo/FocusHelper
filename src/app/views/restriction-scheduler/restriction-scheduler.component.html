@@ -1,0 +1,79 @@
+<div class="animated fadeIn">
+  <div class="card border-0">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-auto mr-auto">
+          <h3 class="text-uppercase">Activar Horario de Restricción</h3>
+        </div>
+        <ng-container *ngIf="activateRestrictionSchedulerForm">
+          <form class="col-auto" [formGroup]="activateRestrictionSchedulerForm">
+            <label class="switch switch-3d switch-success">
+              <input type="checkbox" class="switch-input" formControlName="activateRestrictionScheduler">
+              <span class="switch-slider"></span>
+            </label>
+          </form>
+        </ng-container>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p class="text-muted">Planifica los horarios de las restricciones para que FocusHelper bloquee los sitios web
+            durante ese tiempo</p>
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            <div class="col-auto ml-auto">
+              <button class="btn btn-success pl-4 pr-4" (click)="openCreateScheduleModal()">Crear nuevo horario</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="showAlert">
+  <alert type="success" [dismissible]="true" dismissOnTimeout="5000" (onClosed)="onClosedAlert()">Horario creado
+    correctamente.</alert>
+</ng-container>
+
+
+<!-- <ng-container *ngIf="urls && urls.length">
+<div class="row mt-3">
+  <div class="col">
+    <table class="table" id="custom-urls">
+      <tbody>
+          <ng-container *ngFor="let url of urls; let i = index">
+            <tr>
+              <td [ngClass]="{'border-0': i==0}">
+                <div class="row">
+                  <div class="col-auto mr-auto">{{url}}</div>
+                  <div class="col-auto">
+                    <button class="btn btn-ghost p-0" (click)="deleteUrl(i)">
+                      <i class="icon-trash" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container> -->
+
+<div bsModal #createScheduleModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createScheduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Programar nuevo horario</h4>
+      </div>
+      <div class="modal-body">
+          <edit-schedule (close)="closeCreateScheduleModal($event)"></edit-schedule>
+      </div>
+    </div>
+  </div>
+</div>
