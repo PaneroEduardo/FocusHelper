@@ -1,10 +1,11 @@
-import { DaysOfWeek } from './../../models/days-of-week.enum';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { DaysOfWeek } from "./../../models/days-of-week.enum";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { ModalDirective } from "ngx-bootstrap/modal";
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RestrictionSchedulerService } from './services/restriction-scheduler.service';
-import { Schedule } from '../../models/schedule';
-import { Observable } from 'rxjs';
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { RestrictionSchedulerService } from "./services/restriction-scheduler.service";
+import { Schedule } from "../../models/schedule";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-restriction-scheduler",
@@ -12,14 +13,7 @@ import { Observable } from 'rxjs';
   styleUrls: ["./restriction-scheduler.component.scss"],
 })
 export class RestrictionSchedulerComponent implements OnInit {
-
-  constructor(private restrictionSchedulerService: RestrictionSchedulerService, private cd: ChangeDetectorRef) {
-    this._form = new FormGroup({
-      activateRestrictionScheduler: new FormControl(false, [Validators.required]),
-    });
-  }
-
-  @ViewChild('createScheduleModal') 
+  @ViewChild("createScheduleModal")
   public createScheduleModal: ModalDirective;
 
   private _form: FormGroup;
@@ -27,18 +21,47 @@ export class RestrictionSchedulerComponent implements OnInit {
     return this._form;
   }
 
-  private _showAlert = false
+  private _showAlert = false;
   public get showAlert(): boolean {
     return this._showAlert;
   }
 
   private _schedules$: Observable<Schedule[]>;
-  public get schedules$(): Observable<Schedule[]>{
+  public get schedules$(): Observable<Schedule[]> {
     return this._schedules$;
   }
 
+  constructor(
+    private restrictionSchedulerService: RestrictionSchedulerService,
+    private cd: ChangeDetectorRef
+  ) {
+    this._form = new FormGroup({
+      activateRestrictionScheduler: new FormControl(false, [
+        Validators.required,
+      ]),
+    });
+  }
+
   ngOnInit(): void {
-    this._schedules$ = this.restrictionSchedulerService.getSchedules();
+    this._schedules$ = this.restrictionSchedulerService
+      .getSchedules()
+      .pipe(map((x) => x.schedules));
+
+    this.restrictionSchedulerService
+      .getSchedules()
+      .pipe(map((x) => x.active))
+      .subscribe((x) => {
+        this._form
+          .get("activateRestrictionScheduler")
+          .setValue(x, { emitEvent: false });
+        this.cd.detectChanges();
+      });
+
+    this._form.valueChanges.subscribe(({ activateRestrictionScheduler }) =>
+      this.restrictionSchedulerService.changeActiveScheduler(
+        activateRestrictionScheduler
+      )
+    );
   }
 
   getSchedules() {
@@ -52,10 +75,10 @@ export class RestrictionSchedulerComponent implements OnInit {
   openCreateScheduleModal() {
     this.createScheduleModal.show();
   }
-  
-  closeCreateScheduleModal(saved){
+
+  closeCreateScheduleModal(saved) {
     this.createScheduleModal.hide();
-    if(saved){
+    if (saved) {
       this._showAlert = saved;
     }
   }

@@ -37,9 +37,9 @@
 </ng-container>
 <div class="row mt-3">
   <div class="col">
-    <ng-container *ngIf="urls && urls.length">
-    <table class="table" id="custom-urls">
-      <tbody>
+    <ng-container *ngIf="(urls$ | async) as urls">
+      <table class="table" id="custom-urls">
+        <tbody>
           <ng-container *ngFor="let url of urls; let i = index">
             <tr>
               <td [ngClass]="{'border-0': i==0}">

@@ -53,8 +53,7 @@
                         <div class="col-auto">{{schedule.days | days}}</div>
                         <div class="col-auto ml-auto">
                           <ng-container *ngFor="let hourPeriod of schedule.hourPeriods; let last = last">
-                            <span [ngClass]="{'mr-3': (!last)}">{{hourPeriod.startPeriod}} -
-                              {{hourPeriod.endPeriod}}</span>
+                            <span [ngClass]="{'mr-3': (!last)}">{{hourPeriod.startPeriod}} - {{hourPeriod.endPeriod}}</span>
                           </ng-container>
                         </div>
                         <div class="col-auto">

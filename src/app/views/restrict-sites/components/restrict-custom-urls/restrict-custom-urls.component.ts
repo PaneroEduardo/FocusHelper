@@ -2,6 +2,8 @@ import { CustomUrls } from "../../../../models/custom-urls";
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { RestrictSitesService } from "../../services/restrict-sites.service";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "restrict-custom-urls",
@@ -19,12 +21,15 @@ export class RestrictCustomUrlsComponent implements OnInit {
     return this._newUrlForm;
   }
 
-  private _urls: Array<string>;
-  public get urls(): Array<string> {
-    return this._urls;
+  private _urls$: Observable<string[]>;
+  public get urls$(): Observable<string[]> {
+    return this._urls$;
   }
 
-  constructor(private ref: ChangeDetectorRef, private restrictSitesService: RestrictSitesService) {
+  constructor(
+    private cd: ChangeDetectorRef,
+    private restrictSitesService: RestrictSitesService
+  ) {
     this._restrictForm = new FormGroup({
       resctrictCustomUrls: new FormControl(false, [Validators.required]),
     });
@@ -36,48 +41,38 @@ export class RestrictCustomUrlsComponent implements OnInit {
         ),
       ]),
     });
+
+    this._urls$ = this.restrictSitesService
+      .getCustomUrlsSettings()
+      .pipe(map((x) => x.urls));
+
+    this.restrictSitesService
+      .getCustomUrlsSettings()
+      .pipe(map((x) => x.restricted))
+      .subscribe((x) => {
+        this._restrictForm
+          .get("resctrictCustomUrls")
+          .setValue(x, { emitEvent: false });
+        this.cd.detectChanges();
+      });
+  }
+
+  ngOnInit(): void {
+    this._restrictForm.valueChanges.subscribe(({ resctrictCustomUrls }) =>
+      this.restrictSitesService.changeActiveRestrictionCustomUrls(
+        resctrictCustomUrls
+      )
+    );
   }
 
   createNewUrl() {
     if (this._newUrlForm.valid) {
-      this._urls.push(new URL(this._newUrlForm.value.url).host.replace(/www\./g, ""));
-      this.saveUrls();
+      this.restrictSitesService.createNewUrl(this._newUrlForm.value.url);
       this._newUrlForm.reset();
     }
   }
 
   deleteUrl(i: number) {
-    this._urls.splice(i, 1);
-    this.saveUrls();
-  }
-
-  saveUrls() {
-    this.saveCustomUrlsChanges({
-      restricted: this._restrictForm.value.resctrictCustomUrls,
-      urls: this.urls,
-    });
-  }
-
-  ngOnInit(): void {
-    this._restrictForm.valueChanges.subscribe(({ resctrictCustomUrls }) =>
-      this.saveCustomUrlsChanges({
-        restricted: resctrictCustomUrls,
-        urls: this.urls,
-      })
-    );
-
-    this.restrictSitesService
-      .getCustomUrlsSettings()
-      .subscribe((customUrls: CustomUrls) => {
-        this._urls = customUrls.urls || [];
-        this._restrictForm
-          .get("resctrictCustomUrls")
-          .setValue(customUrls && customUrls.restricted);
-        this.ref.detectChanges();
-      });
-  }
-
-  saveCustomUrlsChanges(customUrls: CustomUrls) {
-    this.restrictSitesService.saveCustomUrlsSettings(customUrls);
+    this.restrictSitesService.deleteUrl(this._newUrlForm.value.url);
   }
 }

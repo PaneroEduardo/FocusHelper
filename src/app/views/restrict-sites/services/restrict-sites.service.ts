@@ -8,6 +8,8 @@ import { Subject } from "rxjs";
   providedIn: "root",
 })
 export class RestrictSitesService {
+  private _urls: string[];
+  private _customUrlsRestricted: boolean;
 
   private _socialMediaObs: Subject<SocialMedia>;
   private _streamingServicesObs: Subject<StreamingServices>;
@@ -43,20 +45,41 @@ export class RestrictSitesService {
     return this._streamingServicesObs.asObservable();
   }
 
-  public saveCustomUrlsSettings(customUrls: CustomUrls) {
-    chrome.storage.sync.set({ customUrls });
+  public createNewUrl(url: string) {
+    this._urls.push(
+      new URL(url).host.replace(/www\./g, "")
+    );
+    this._customUrlsObs.next({restricted: this._customUrlsRestricted, urls: this._urls} as CustomUrls)
+    this.saveCustomUrlsSettings();
+  }
+
+  public deleteUrl(i: number) {
+    this._urls.splice(i, 1);
+    this._customUrlsObs.next({restricted: this._customUrlsRestricted, urls: this._urls} as CustomUrls)
+    this.saveCustomUrlsSettings();
+  }
+
+  public changeActiveRestrictionCustomUrls(activeRestrictedCustomUrls: boolean) {
+    this._customUrlsRestricted = activeRestrictedCustomUrls;
+    this._customUrlsObs.next({restricted: this._customUrlsRestricted, urls: this._urls} as CustomUrls)
+    this.saveCustomUrlsSettings();
+  }
+
+
+  private saveCustomUrlsSettings() {
+    chrome.storage.sync.set({ customUrls: {restricted: this._customUrlsRestricted, urls: this._urls} });
   }
 
   public getCustomUrlsSettings() {
     chrome.storage.sync.get(
       { customUrls: { restricted: false, urls: [] } },
       ({ customUrls }) => {
-        this._customUrlsObs.next(customUrls as CustomUrls);
+        this._customUrlsRestricted = customUrls.restricted
+        this._urls = customUrls.urls;
+        this._customUrlsObs.next({restricted: this._customUrlsRestricted, urls: this._urls} as CustomUrls);
       }
     );
 
     return this._customUrlsObs.asObservable();
   }
-
-
 }
