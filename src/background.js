@@ -17,10 +17,39 @@ const streamingServiceUrls = [
   "disneyplus.com",
 ];
 
+const arrayMove = (arr, oldIndex, newIndex) => {
+  if (newIndex >= arr.length) {
+      var k = newIndex - arr.length + 1;
+      while (k--) {
+          arr.push(undefined);
+      }
+  }
+  arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+  return arr;
+};
+
 const redirect = (tabId) => {
   chrome.tabs.update(tabId, {
     url: chrome.runtime.getURL("index.html#/forbidden"),
   });
+};
+
+const saveUrl = (url) => {
+  chrome.storage.local.get(
+    { last5UrlsRestricted: [] },
+    ({ last5UrlsRestricted }) => {
+      let indexUrl = last5UrlsRestricted.indexOf(url);
+      if (indexUrl > -1) {
+        last5UrlsRestricted = arrayMove(last5UrlsRestricted, indexUrl, 0);
+      } else {
+        if (last5UrlsRestricted.length > 4) {
+          last5UrlsRestricted.pop();
+        }
+        last5UrlsRestricted.unshift(url);
+      }
+      chrome.storage.local.set({ last5UrlsRestricted });
+    }
+  );
 };
 
 const getHourStringAsNumber = (hourStr) => {
@@ -52,6 +81,7 @@ const checkScheduler = (scheduler) => {
 const checkGroup = (url, scheduler, tabId, urls) => {
   let regex = new RegExp(`https?:\/\/(www\.){0,1}(${urls.join("|")})`, "gi");
   if (regex.test(url) && checkScheduler(scheduler)) {
+    saveUrl(url);
     redirect(tabId);
     return true;
   }
