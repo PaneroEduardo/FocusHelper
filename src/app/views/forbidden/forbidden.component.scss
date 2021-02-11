@@ -1,0 +1,13 @@
+
+#block-image {
+    position: absolute;
+    z-index: -1;
+    top: 57px;
+    left: 0;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+    background-image: url('../../../assets/img/work-1.jpg');
+    width: 100%;
+    height: calc(100% - 57px);
+    filter: brightness(60%);
+}

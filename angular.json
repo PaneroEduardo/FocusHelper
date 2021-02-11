@@ -9,7 +9,7 @@
       "projectType": "application",
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
             "outputPath": "dist",
@@ -19,7 +19,8 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/manifest.json"
+              "src/manifest.json",
+              "src/background.js"
             ],
             "styles": [
               "node_modules/@coreui/icons/css/free.css",
@@ -37,17 +38,10 @@
             "allowedCommonJsDependencies": [
               "chart.js",
               "classnames"
-            ],
-            "customWebpackConfig": {
-              "path": "./custom-webpack.config.js"
-            }
+            ]
           },
           "configurations": {
-            "dev": {
-              "customWebpackConfig": {
-                "path": "./custom-webpack-dev.config.js"
-              }
-            },
+
             "production": {
               "budgets": [
                 {

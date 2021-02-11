@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // Import Containers
-import { DefaultLayoutComponent } from './containers';
+import { DefaultLayoutComponent, EmptyLayoutComponent } from './containers';
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
@@ -51,6 +51,19 @@ export const routes: Routes = [
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
       }
+    ]
+  },
+  {
+    path: 'forbidden',
+    component: EmptyLayoutComponent,
+    data: {
+      title: 'Este sitio esta restringido'
+    },
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./views/forbidden/forbidden.module').then(m => m.ForbiddenModule)
+      },
     ]
   },
   { path: '**', component: P404Component }
