@@ -23,9 +23,35 @@ const redirect = (tabId) => {
   });
 };
 
-const checkGroup = (url, tabId, urls) => {
+const getHourStringAsNumber = (hourStr) => {
+  const [ hour, minute ] = hourStr.split(":").map((x) => parseInt(x));
+  return hour * 60 + minute;
+};
+
+const getHourAsNumber = (date) => {
+  return date.getHours() * 60 + date.getMinutes();
+};
+
+const checkScheduler = (scheduler) => {
+  if (scheduler.active) {
+    const today = new Date();
+    const schedule = scheduler.schedules.filter(
+      (x) => x.days.indexOf(today.getDay() === 0 ? 7 : today.getDay() - 1) > -1
+    );
+    if (schedule) {
+      return schedule.some(x => x.hourPeriods.some(
+        (y) =>
+          getHourStringAsNumber(y.startPeriod) < getHourAsNumber(today) &&
+          getHourAsNumber(today) < getHourStringAsNumber(y.endPeriod)
+      ));
+    }
+    return false;
+  }
+};
+
+const checkGroup = (url, scheduler, tabId, urls) => {
   let regex = new RegExp(`https?:\/\/(www\.){0,1}(${urls.join("|")})`, "gi");
-  if (regex.test(url)) {
+  if (regex.test(url) && checkScheduler(scheduler)) {
     redirect(tabId);
     return true;
   }
@@ -33,29 +59,44 @@ const checkGroup = (url, tabId, urls) => {
 };
 
 const checkSocialMedia = (url, tabId) => {
-  chrome.storage.sync.get("socialMedia", ({ socialMedia }) => {
-    if (socialMedia.restricted) {
-      checkGroup(url, tabId, socialMediaUrls) ||
-        checkStreamingService(url, tabId);
+  chrome.storage.sync.get(
+    {
+      socialMedia: { restricted: false },
+      scheduler: { active: false, schedules: [] },
+    },
+    ({ socialMedia, scheduler }) => {
+      if (socialMedia.restricted) {
+        checkGroup(url, scheduler, tabId, socialMediaUrls) ||
+          checkStreamingService(url, tabId);
+      }
     }
-  });
+  );
 };
 
 const checkStreamingService = (url, tabId) => {
-  chrome.storage.sync.get("streamingServices", ({ streamingServices }) => {
-    if (streamingServices.restricted) {
-      checkGroup(url, tabId, streamingServiceUrls) ||
-        checkCustomUrls(url, tabId);
+  chrome.storage.sync.get(
+    {
+      streamingServices: { restricted: false },
+      scheduler: { active: false, schedules: [] },
+    },
+    ({ streamingServices, scheduler }) => {
+      if (streamingServices.restricted) {
+        checkGroup(url, scheduler, tabId, streamingServiceUrls) ||
+          checkCustomUrls(url, tabId);
+      }
     }
-  });
+  );
 };
 
 const checkCustomUrls = (url, tabId) => {
   chrome.storage.sync.get(
-    { customUrls: { restricted: false, urls: [] } },
-    ({ customUrls }) => {
+    {
+      customUrls: { restricted: false, urls: [] },
+      scheduler: { active: false, schedules: [] },
+    },
+    ({ customUrls, scheduler }) => {
       if (customUrls.restricted) {
-        checkGroup(url, tabId, customUrls.urls);
+        checkGroup(url,scheduler, tabId, customUrls.urls);
       }
     }
   );
