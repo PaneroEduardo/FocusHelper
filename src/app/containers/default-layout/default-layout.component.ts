@@ -9,13 +9,11 @@ export class DefaultLayoutComponent {
   public sidebarMinimized = false;
   public navItems =   [{
     name: 'Restricción de Sitios',
-    url: '/options/restriction/sites',
-    icon: 'icon-shield',
+    url: '/options/restriction/sites'
   },
   {
     name: 'Programar Restricciones',
-    url: '/options/restriction/scheduler',
-    icon: 'icon-calendar',
+    url: '/options/restriction/scheduler'
   }];
 
   toggleMinimize(e) {

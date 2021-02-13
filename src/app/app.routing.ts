@@ -11,7 +11,7 @@ import { P500Component } from './views/error/500.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'options',
     pathMatch: 'full',
   },
   {
@@ -32,7 +32,7 @@ export const routes: Routes = [
     path: 'options',
     component: DefaultLayoutComponent,
     data: {
-      title: 'Home'
+      title: 'Options'
     },
     children: [
       {
@@ -44,12 +44,9 @@ export const routes: Routes = [
         loadChildren: () => import('./views/restriction-scheduler/restriction-scheduler.module').then(m => m.RestrictionSchedulerModule)
       },
       {
-        path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
-      },
-      {
-        path: 'icons',
-        loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
+        path: '',
+        redirectTo: 'restriction/sites',
+        pathMatch: 'full'
       }
     ]
   },
