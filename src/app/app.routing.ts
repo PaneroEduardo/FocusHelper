@@ -44,6 +44,10 @@ export const routes: Routes = [
         loadChildren: () => import('./views/restriction-scheduler/restriction-scheduler.module').then(m => m.RestrictionSchedulerModule)
       },
       {
+        path: 'security',
+        loadChildren: () => import('./views/security/security.module').then(m => m.SecurityModule)
+      },
+      {
         path: '',
         redirectTo: 'restriction/sites',
         pathMatch: 'full'

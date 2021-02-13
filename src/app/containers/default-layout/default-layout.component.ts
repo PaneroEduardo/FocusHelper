@@ -14,6 +14,10 @@ export class DefaultLayoutComponent {
   {
     name: 'Programar Restricciones',
     url: '/options/restriction/scheduler'
+  },  
+  {
+    name: 'Seguridad',
+    url: '/options/security'
   }];
 
   toggleMinimize(e) {
