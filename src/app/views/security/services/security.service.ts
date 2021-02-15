@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
+import { shareReplay } from "rxjs/operators";
+import { Md5 } from "ts-md5";
 import { PasswordSettings } from "../../../models/password-settings";
 
 @Injectable()
@@ -19,7 +21,7 @@ export class SecurityService {
   }
 
   public savePassword(password: string) {
-    this._password = password;
+    this._password = Md5.hashStr(password) as string;
     this.savePasswordSettings();
   }
 
