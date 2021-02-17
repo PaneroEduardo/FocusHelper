@@ -10,3 +10,9 @@
   border-right: 1px solid #c8ced3;
 }
 
+.disabled
+{
+  pointer-events: none;
+  opacity: 0.5;
+  background: #CCC;
+}

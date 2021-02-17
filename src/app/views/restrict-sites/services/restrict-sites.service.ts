@@ -74,6 +74,7 @@ export class RestrictSitesService {
     chrome.storage.sync.get(
       { customUrls: { restricted: false, urls: [] } },
       ({ customUrls }) => {
+
         this._customUrlsRestricted = customUrls.restricted
         this._urls = customUrls.urls;
         this._customUrlsObs.next({restricted: this._customUrlsRestricted, urls: this._urls} as CustomUrls);
@@ -82,4 +83,5 @@ export class RestrictSitesService {
 
     return this._customUrlsObs.asObservable();
   }
+
 }

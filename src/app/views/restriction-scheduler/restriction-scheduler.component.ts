@@ -6,6 +6,7 @@ import { RestrictionSchedulerService } from "./services/restriction-scheduler.se
 import { Schedule } from "../../models/schedule";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { OptionsService } from "../../global/services/options.service";
 
 @Component({
   selector: "app-restriction-scheduler",
@@ -31,8 +32,14 @@ export class RestrictionSchedulerComponent implements OnInit {
     return this._schedules$;
   }
 
+  private _disabledOptions: boolean;
+  public get disableOptions(): boolean {
+    return this._disabledOptions;
+  }
+
   constructor(
     private restrictionSchedulerService: RestrictionSchedulerService,
+    private optionsService: OptionsService,
     private cd: ChangeDetectorRef
   ) {
     this._form = new FormGroup({
@@ -46,6 +53,11 @@ export class RestrictionSchedulerComponent implements OnInit {
     this._schedules$ = this.restrictionSchedulerService
       .getSchedules()
       .pipe(map((x) => x.schedules));
+
+    this.optionsService.getDisabledOptions().subscribe((disable) => {
+      this._disabledOptions = disable;
+      this.cd.detectChanges();
+    });
 
     this.restrictionSchedulerService
       .getSchedules()
